@@ -1,0 +1,20 @@
+{
+	"name": "svelte-webext-storage-adapter",
+	"author": {
+		"name": "Pikadude No. 1",
+		"url": "https://pikadudeno1.com"
+	},
+	"module": "index.mjs",
+	"scripts": {
+		"test": "mocha test.js"
+	},
+	"peerDependencies": {
+		"svelte": "^3.2.1"
+	},
+	"devDependencies": {
+		"esm": "^3.2.25",
+		"mocha": "^6.1.4",
+		"svelte": "^3.4.1"
+	},
+	"license": "MIT"
+}
