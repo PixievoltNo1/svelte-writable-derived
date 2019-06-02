@@ -1,10 +1,16 @@
 {
 	"name": "svelte-writable-derived",
+	"version": "1.0.0-rc.1",
+	"description": "Two-way data-transforming stores for Svelte",
+	"keywords": ["svelte", "svelte3"],
 	"author": {
 		"name": "Pikadude No. 1",
 		"url": "https://pikadudeno1.com"
 	},
+	"homepage": "https://github.com/PikadudeNo1/svelte-writable-derived",
+	"bugs": "https://github.com/PikadudeNo1/svelte-writable-derived/issues",
 	"module": "index.mjs",
+	"files": ["index.mjs"],
 	"scripts": {
 		"test": "mocha test.js"
 	},
