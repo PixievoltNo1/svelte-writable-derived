@@ -22,6 +22,17 @@ export default function(origins, derive, reflect, initial) {
 	var childDerived = derived(origins, wrappedDerive);
 	
 	var singleOrigin = !Array.isArray(origins), unsubscribeFromDerived;
+	var sendUpstream = (setWith) => {
+		allowDerive = false;
+		if (singleOrigin) {
+			origins.set(setWith);
+		} else {
+			setWith.forEach( (value, i) => {
+				origins[i].set(value);
+			} );
+		}
+		allowDerive = true;
+	};
 	var cleanup = null;
 	allowReflect = false;
 	childWritable.subscribe((value) => {
@@ -32,17 +43,6 @@ export default function(origins, derive, reflect, initial) {
 			}
 			
 			let isAsync = false;
-			let setter = (setWith) => {
-				allowDerive = false;
-				if (singleOrigin) {
-					origins.set(setWith);
-				} else {
-					setWith.forEach( (value, i) => {
-						origins[i].set(value);
-					} );
-				}
-				allowDerive = true;
-			};
 			let returned = reflect({
 				reflecting: value,
 				get old() {
@@ -59,7 +59,7 @@ export default function(origins, derive, reflect, initial) {
 				},
 				get set() {
 					isAsync = true;
-					return setter;
+					return sendUpstream;
 				},
 			});
 			if (isAsync) {
@@ -67,7 +67,7 @@ export default function(origins, derive, reflect, initial) {
 					cleanup = returned;
 				}
 			} else {
-				setter(returned);
+				sendUpstream(returned);
 			}
 		}
 	});
