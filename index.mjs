@@ -1,25 +1,29 @@
 import { writable, derived, get as readStore } from "svelte/store";
 export default function(origins, derive, reflect, initial) {
-	var originValues, allowDerive = true, ignoreMe = {};
+	var originValues, allowReflect = true, allowDerive = true;
+	var childWritable = writable(initial);
+	var childWritableSetter = childWritable.set;
+	var sendDownstream = (value) => {
+		allowReflect = false;
+		childWritableSetter(value);
+		allowReflect = true;
+	};
 	var wrappedDerive = (got, set) => {
 		originValues = got;
 		if (allowDerive) {
-			if (derive.length >= 2) {
-				set(ignoreMe);
-			}
-			let returned = derive(got, set);
+			let returned = derive(got, sendDownstream);
 			if (derive.length < 2) {
-				set(returned);
+				sendDownstream(returned);
 			} else {
 				return returned;
 			}
 		}
 	};
 	var childDerived = derived(origins, wrappedDerive);
-	var childWritable = writable(initial);
 	
-	var singleOrigin = !Array.isArray(origins), allowReflect = false, unsubscribeFromDerived;
+	var singleOrigin = !Array.isArray(origins), unsubscribeFromDerived;
 	var cleanup = null;
+	allowReflect = false;
 	childWritable.subscribe((value) => {
 		if (allowReflect) {
 			if (cleanup) {
@@ -69,12 +73,7 @@ export default function(origins, derive, reflect, initial) {
 	});
 	allowReflect = true;
 	function listen() {
-		unsubscribeFromDerived = childDerived.subscribe( (value) => {
-			if (value == ignoreMe) { return; }
-			allowReflect = false;
-			childWritable.set(value);
-			allowReflect = true;
-		} );
+		unsubscribeFromDerived = childDerived.subscribe( () => {} );
 	}
 	function unlisten() {
 		unsubscribeFromDerived();
