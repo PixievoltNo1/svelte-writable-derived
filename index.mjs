@@ -84,9 +84,9 @@ export default function(origins, derive, reflect, initial) {
 	var subscriberCount = 0;
 	var me = {
 		subscribe(subscriber) {
-			var unsubscribe = childWritable.subscribe(subscriber);
 			++subscriberCount;
 			if (subscriberCount == 1) { listen(); }
+			var unsubscribe = childWritable.subscribe(subscriber);
 			return () => {
 				unsubscribe();
 				--subscriberCount;

@@ -283,3 +283,14 @@ describe("update method", function() {
 		assert.ok(passing);
 	});
 });
+describe("subscribe method", function() {
+	specify("first subscription gets its first call after derive", function() {
+		var subscriptionCallAllowed = false;
+		var testing = writableDerived(writable(), () => {
+			subscriptionCallAllowed = true;
+		}, () => {});
+		testing.subscribe( () => {
+			assert.ok(subscriptionCallAllowed);
+		} );
+	})
+});
