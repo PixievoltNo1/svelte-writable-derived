@@ -144,7 +144,7 @@ describe("reflect parameter", function() {
 		testing.subscribe( () => {} );
 		testing.set(1);
 	});
-	specify("called before subscriptions", function() {
+	specify("called after subscriptions", function() {
 		var actual = [], collectSubscriptionCalls = false;
 		var testing = writableDerived(writable(), () => 1, ({set}) => {
 			actual.push("reflect");
@@ -156,36 +156,26 @@ describe("reflect parameter", function() {
 		} );
 		collectSubscriptionCalls = true;
 		testing.set(2);
-		assert.deepStrictEqual(actual, ["reflect", "subscription"]);
+		assert.deepStrictEqual(actual, ["subscription", "reflect"]);
 	});
+	specify("called only once with latest value when subscriptions set or update");
 	describe("old origin values", function() {
-		var datasets = [
-			{
-				name: "single origin",
-				getOrigins: () => writable(1),
-				expected: 1,
-			},
-			{
-				name: "multiple origins (incl. non-writables)",
-				getOrigins: () => [writable(1), readable(2, () => {})],
-				expected: [1, 2],
-			},
-		];
-		for (let {name, getOrigins, expected} of datasets) {
-			specify(`${name}, active subscription`, function() {
-				var testing = writableDerived(getOrigins(), () => 3, ({old, set}) => {
-					assert.deepStrictEqual(old, expected);
-				});
-				testing.subscribe( () => {} );
-				testing.set(4);
+		specify("single origin", function() {
+			var origin = writable(1);
+			var expected = 1;
+			var testing = writableDerived(origin, () => 3, ({old, set}) => {
+				assert.deepStrictEqual(old, expected);
 			});
-			specify(`${name}, no subscription`, function() {
-				var testing = writableDerived(getOrigins(), () => 3, ({old, set}) => {
-					assert.deepStrictEqual(old, expected);
-				});
-				testing.set(4);
+			testing.set(4);
+		});
+		specify("multiple origins (incl. non-writables)", function() {
+			var origins = [writable(1), readable(2, () => {})];
+			var expected = [1, 2];
+			var testing = writableDerived(origins, () => 3, ({old, set}) => {
+				assert.deepStrictEqual(old, expected);
 			});
-		}
+			testing.set(4);
+		});
 	});
 	
 	function originSetTests(makeSetter) {
@@ -226,6 +216,7 @@ describe("reflect parameter", function() {
 				assert.ok(deriveAllowed);
 				return 0;
 			}, reflect);
+			testing.subscribe( () => {} );
 			deriveAllowed = false;
 			testing.set(1);
 			return whenDone( () => {} );
@@ -273,6 +264,16 @@ describe("reflect parameter", function() {
 		});
 	});
 });
+describe("set method", function() {
+	specify("calls derive if there are no subscribers", function() {
+		var passing = false;
+		var testing = writableDerived(writable(), () => {
+			passing = true;
+		}, () => {});
+		testing.update( () => {} );
+		assert.ok(passing);
+	});
+});
 describe("update method", function() {
 	specify("calls derive if there are no subscribers", function() {
 		var passing = false;
@@ -292,5 +293,6 @@ describe("subscribe method", function() {
 		testing.subscribe( () => {
 			assert.ok(subscriptionCallAllowed);
 		} );
-	})
+	});
+	specify("lets svelte correctly handle diamond dependencies");
 });
