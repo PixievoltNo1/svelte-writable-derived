@@ -294,5 +294,22 @@ describe("subscribe method", function() {
 			assert.ok(subscriptionCallAllowed);
 		} );
 	});
-	specify("lets svelte correctly handle diamond dependencies");
+	specify("lets svelte correctly handle diamond dependencies", function() {
+		var level1 = writable(1);
+		var level2a = writableDerived(level1, (l1Val) => {
+			return l1Val * 10;
+		}, () => {});
+		var level2b = writableDerived(level1, (l1Val) => {
+			return l1Val * 100;
+		}, () => {});
+		var level3 = writableDerived([level2a, level2b], ([l2aVal, l2bVal]) => {
+			return l2aVal + l2bVal;
+		}, () => {});
+		var actual = [];
+		level3.subscribe( (value) => {
+			actual.push(value);
+		} );
+		level1.set(2);
+		assert.deepStrictEqual(actual, [110, 220]);
+	});
 });

@@ -4,7 +4,7 @@
 - Changed: Changes to which operations cause a subscription-less `writableDerived` to subscribe-then-unsubscribe to all origins:
 	- `set` method calls now do so
 	- Getting old origin values in `reflect` no longer does so
-- Optimization: Participates in Svelte v3.5.0's [diamond dependencies solution](https://github.com/sveltejs/svelte/pull/2955)
+- Optimization: Participates in Svelte v3.5.0's [diamond dependencies solution](https://github.com/sveltejs/svelte/pull/2955) (downstream only; there is no diamond dependency handling for reflecting values back to their sources)
 - Optizimation: No more internal writable store; the only internal store is a `derived`
 
 ## 1.0.1 (June 7, 2019)
