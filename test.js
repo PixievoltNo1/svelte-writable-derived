@@ -104,7 +104,7 @@ describe("derive parameter", function() {
 			var setter;
 			var testing = writableDerived(writable(0), (value, set) => {
 				setter = set;
-			}, ({set}) => {});
+			}, (reflecting, set) => {});
 			var unsubscribe = testing.subscribe(() => {});
 			setter(1);
 			unsubscribe();
@@ -123,7 +123,7 @@ describe("derive parameter", function() {
 describe("reflect parameter", function() {
 	specify("called upon set and receives new value", function() {
 		var passed;
-		var testing = writableDerived(writable(), () => 1, ({reflecting}) => {
+		var testing = writableDerived(writable(), () => 1, (reflecting) => {
 			passed = reflecting == 2;
 		});
 		testing.set(2);
@@ -131,7 +131,7 @@ describe("reflect parameter", function() {
 	});
 	specify("called upon update and receives new value", function() {
 		var passed;
-		var testing = writableDerived(writable(), () => 1, ({reflecting}) => {
+		var testing = writableDerived(writable(), () => 1, (reflecting) => {
 			passed = reflecting == 2;
 		});
 		testing.update(() => 2);
@@ -146,7 +146,7 @@ describe("reflect parameter", function() {
 	});
 	specify("called after subscriptions", function() {
 		var actual = [], collectSubscriptionCalls = false;
-		var testing = writableDerived(writable(), () => 1, ({set}) => {
+		var testing = writableDerived(writable(), () => 1, (reflecting, set) => {
 			actual.push("reflect");
 		});
 		testing.subscribe( () => {
@@ -160,7 +160,7 @@ describe("reflect parameter", function() {
 	});
 	specify("called only once with latest value when subscriptions set or update", function() {
 		var actual = [];
-		var testing = writableDerived(writable(), () => 1, ({reflecting, set}) => {
+		var testing = writableDerived(writable(), () => 1, (reflecting, set) => {
 			actual.push(reflecting);
 		});
 		testing.subscribe( (value) => {
@@ -170,24 +170,6 @@ describe("reflect parameter", function() {
 		} );
 		testing.set(2);
 		assert.deepStrictEqual(actual, [3]);
-	});
-	describe("old origin values", function() {
-		specify("single origin", function() {
-			var origin = writable(1);
-			var expected = 1;
-			var testing = writableDerived(origin, () => 3, ({old, set}) => {
-				assert.deepStrictEqual(old, expected);
-			});
-			testing.set(4);
-		});
-		specify("multiple origins (incl. non-writables)", function() {
-			var origins = [writable(1), readable(2, () => {})];
-			var expected = [1, 2];
-			var testing = writableDerived(origins, () => 3, ({old, set}) => {
-				assert.deepStrictEqual(old, expected);
-			});
-			testing.set(4);
-		});
 	});
 	
 	function originSetTests(makeSetter) {
@@ -247,7 +229,7 @@ describe("reflect parameter", function() {
 			var setIsDone;
 			var whenSetDone = new Promise( (resolve) => { setIsDone = resolve; } );
 			return {
-				reflect({set}) {
+				reflect(reflecting, set) {
 					Promise.resolve().then( () => {
 						set(setValue);
 						setIsDone();
@@ -259,7 +241,7 @@ describe("reflect parameter", function() {
 		specify("does not set with the return value", function() {
 			var expected = 0;
 			var origin = writable(expected);
-			var testing = writableDerived(origin, () => {}, ({set}) => {
+			var testing = writableDerived(origin, () => {}, (reflecting, set) => {
 				return () => {};
 			});
 			testing.set(1);
@@ -267,12 +249,49 @@ describe("reflect parameter", function() {
 		});
 		specify("return value called as a cleanup function", function() {
 			var noOfCalls = 0;
-			var testing = writableDerived(writable(0), () => {}, ({set}) => {
+			var testing = writableDerived(writable(0), () => {}, (reflecting, set) => {
 				return () => { ++noOfCalls; };
 			});
 			testing.set(1);
 			testing.set(2);
 			assert.equal(noOfCalls, 1);
+		});
+	});
+	
+	describe("object with withOld", function() {
+		specify("passes single origin", function() {
+			var origin = writable(1);
+			var expected = 1;
+			var testing = writableDerived(origin, () => 3, { withOld(reflecting, old, set) {
+				assert.deepStrictEqual(old, expected);
+			} });
+			testing.set(4);
+		});
+		specify("passes multiple origins (incl. non-writables)", function() {
+			var origins = [writable(1), readable(2, () => {})];
+			var expected = [1, 2];
+			var testing = writableDerived(origins, () => 3, { withOld(reflecting, old, set) {
+				assert.deepStrictEqual(old, expected);
+			} });
+			testing.set(4);
+		});
+		specify("2-parameter method is synchronous", function() {
+			var origin = writable(1);
+			var expected = 2;
+			var testing = writableDerived(origin, () => 3, { withOld(reflecting, old) {
+				return expected;
+			} });
+			testing.set(4);
+			assert.equal(get(origin), expected);
+		});
+		specify("3-parameter method is asynchronous", function() {
+			var expected = 1;
+			var origin = writable(expected);
+			var testing = writableDerived(origin, () => 3, { withOld(reflecting, old, set) {
+				return 2;
+			} });
+			testing.set(4);
+			assert.equal(get(origin), expected);
 		});
 	});
 });

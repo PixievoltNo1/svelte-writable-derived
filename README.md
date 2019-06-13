@@ -26,51 +26,30 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
 
 ## Default export: `writableDerived()`
 
-<i>Parameters: `origins` ([store](https://svelte.dev/tutorial/writable-stores) or array of stores), `derive` (function), [`reflect`](#new-parameter-reflect) (function), optional `initial` (any)</i><br>
+<i>Parameters: `origins` ([store](https://svelte.dev/tutorial/writable-stores) or array of stores), `derive` (function), [`reflect`](#new-parameter-reflect) (see documentation), optional `initial` (any)</i><br>
 <i>Returns a store with [`writable`](https://svelte.dev/docs#writable) methods</i>
 
 Create a store that behaves similarly to [Svelte's `derived`](https://svelte.dev/docs#derived), with `origins`, `derive`, and `initial` working like its 1st, 2nd, and 3rd parameters respectively. Values introduced to the store via its `set` and `update` methods are passed to the new 3rd parameter, `reflect`, which can in turn set values for the origin stores.
 
 It is not possible for `derived` and `reflect` to trigger calls to each other, provided they only use the `set` callbacks provided to them and do not reach out to any outer `set` or `update`.
 
-### New parameter: `reflect()`
+### New parameter: `reflect`
 
-<i>Called with: object with `reflecting`, `old`, and `set` properties</i>
-<i>Return value varies (see below)</i>
+<i>One of the following:</i>
+* <i>Function with parameters: `reflecting` (any), optional `set` (function)</i>
+* <i>Object with property `withOld` containing function with parameters: `reflecting` (any), `old` (any), optional `set` (function)</i>
 
-Called when the derived store is given a new value via its `set` and `update` methods (not via the `derive` callback), and can set new values on the origin stores without causing a call to `derive`.
+The provided function is called when the derived store gets a new value via its `set` and `update` methods (not via the `derive` callback). Its `reflecting` parameter is this new value. The `set` parameter accepts a value to set in the origin store, if `origins` was a store, or an array of values to set if `origins` was an array. If the `set` parameter receives an array that's sparse or shorter than `origins`, it will only set the stores it has elements for, and other stores don't necessarily need to be writable. If the function doesn't take a `set` parameter, its return value will be used to set origin stores just as if it were passed to `set`.
 
-`reflect` will be called before any of the derived store's subscriptions are called. If this results in any origin stores being set synchronously, their subscriptions will also be called before the derived store's subscriptions.
+`reflect` is called after the derived store's subscriptions are called. If the derived store has its `set` and/or `update` methods called again in the process of calling its subscriptions, `reflect` will be called only once, with the most-recently-set value.
 
-`reflect` is called with one parameter, an object that has these properties:
+If `reflect` takes a `set` parameter, it may return a cleanup function that will be called immediately before the next `reflect` call. (Unlike its `derive` counterpart, `reflect`'s cleanup function is never called in response to unsubscriptions.)
 
-Name | Description
---- | ---
-`reflecting` | The new value of the derived store.
-`old` | The initial value of the origin stores. It's an array if `origins` was an array. (This is an accessor property, and has [special behavior for derived stores with no subscriptions](#regarding-subscription-less-writablederived-stores).)
-`set()` | If `origins` is a single store, this takes its new value. If `origins` is an array of stores, this takes an array of values to set in each store. If the array you pass in is sparse or shorter than `origins`, this sets only the stores it has elements for, and other stores don't necessarily need to be writable. (This is an accessor property, and affects the treatment of the return value as per below.)
-
-If the `set` property was not read, `reflect` is considered synchronous, and its return value will be used to set origin stores just as if it were passed to `set()`. If the `set` property *was* read, `reflect` is considered asynchronous, and its return value, if it's a function, is a cleanup function that will be called before the next `reflect` call. (Unlike its `derive` counterpart, `reflect`'s cleanup function is never called in response to unsubscriptions.)
-
-It is recommended that your `reflect` function use a destructuring parameter, like so:
-
-```javascript
-var coolStore = writableDerived(origins, derive, reflectExample, initial);
-function reflectExample({reflecting, old, set}) {
-	// The set property was read in the process of destructuring.
-	// Therefore, this function is guaranteed to be treated as asynchronous.
-	return cleanup;
-}
-```
+If the `reflect` parameter is provided a function via an object with a `withOld` property, that function will be called with an additional `old` parameter after `reflecting`. This is the initial value of the origin stores, and will be an array if `origins` was an array.
 
 ## Regarding Subscription-less `writableDerived` Stores
 
-One of the ways `writableDerived` emulates the behavior of Svelte's `derived` is that it does not subscribe to any origin store until the derived store itself has a subscription. However, `writableDerived` makes an exception in certain situations to guarantee that values of interest are up-to-date.
-
-When the derived store has no subscriptions, performing these operations will subscribe to & then unsubscribe from all its origins:
-
-* Calling the derived store's `update` method
-* Getting the `old` property of the object passed to `reflect`
+One of the ways `writableDerived` emulates the behavior of Svelte's `derived` is that it does not subscribe to any origin store until the derived store itself has a subscription. However, `writableDerived` makes an exception: Calling the `set` and `update` methods when the derived store has no subscriptions will subscribe to & then unsubscribe from all its origins.
 
 ## Examples
 
@@ -84,7 +63,7 @@ var jsonStore = writable(`{"I'm a property": true}`);
 var objectStore = writableDerived(
 	jsonStore,
 	(json) => JSON.parse(json),
-	({reflecting}) => JSON.stringify(reflecting)
+	(object) => JSON.stringify(object)
 );
 console.log( Object.keys( get(objectStore) ) ); // ["I'm a property"]
 objectStore.set({"I'm not a property": false});
@@ -101,10 +80,10 @@ var objectStore = writable({"a horse": "a horse", "of course": "of course"});
 var valueStore = writableDerived(
 	objectStore,
 	(object) => object["a horse"],
-	({reflecting, old}) => {
-		old["a horse"] = reflecting;
-		return old; // needed to ensure objectStore.set is called with the correct value
-	}
+	{ withOld(reflecting, object) {
+		object["a horse"] = reflecting;
+		return object; // needed to ensure objectStore.set is called with the proper value
+	} }
 );
 console.log( get(valueStore) ); // "a horse"
 valueStore.set("*whinny*");
@@ -121,7 +100,7 @@ var valueStore1 = "sparta", valueStore2 = "monty python's flying circus";
 var objectStore = writableDerived(
 	[valueStore1, valueStore2],
 	([value1, value2]) => ( {"this is": value1, "it's": value2} ),
-	({reflecting}) => [ reflecting["this is"], reflecting["it's"] ]
+	(object) => [ object["this is"], object["it's"] ]
 );
 console.log( get(objectStore) ); // {"this is": "sparta", "it's": "monty python's flying circus"}
 objectStore.set( {"this is": "rocket league", "it's": "over 9000"} );
@@ -139,37 +118,37 @@ var jsonStore = writable(`{"owner": "dragon", "possessions": ["crown", "gold"]}`
 var hoardStore = writableDerived(
 	jsonStore,
 	(json) => JSON.parse(json),
-	({reflecting}) => JSON.stringify(reflecting)
+	(object) => JSON.stringify(object)
 );
 
 var hoarderStore = writableDerived(
 	objectStore,
 	(hoard) => hoard["owner"],
-	({reflecting, old}) => {
-		old["owner"] = reflecting;
-		return old;
-	}
+	{ withOld(reflecting, hoard) {
+		hoard["owner"] = reflecting;
+		return hoard;
+	} }
 );
 var hoardContentsStore = writableDerived(
 	objectStore,
 	(hoard) => hoard["possessions"],
-	({reflecting, old}) => {
-		old["possessions"] = reflecting;
-		return old;
-	}
+	{ withOld(reflecting, hoard) {
+		hoard["possessions"] = reflecting;
+		return hoard;
+	} }
 );
 
 var itemListStore = writableDerived(
 	[hoarderStore, hoardContentsStore],
 	([hoarder, hoardContents]) => {
 		return hoardContents.map( (item) => {
-			return {item, owner: "hoarder"};
+			return {item, owner: hoarder};
 		});
 	},
-	({reflecting}) => {
+	(itemList) => {
 		// This is only for demonstration purposes, so we won't handle differing owners
-		var hoarder = reflecting[0].owner;
-		var hoardContents = reflecting.map( (itemListEntry) => {
+		var hoarder = itemList[0].owner;
+		var hoardContents = itemList.map( (itemListEntry) => {
 			return itemListEntry["item"];
 		} );
 		return [hoarder, hoardContents];
@@ -187,17 +166,11 @@ itemListStore.update( (itemList) => {
 	} );
 } );
 /*
-	reflect runs before subscribers. Since all our reflects are synchronous,
-	before any subscribers can run, the next layer's set is called, which
-	calls *its* reflect before *its* subscribers, and so on. This means
-	stores will call their subscribers starting with the lowest/innermost
-	layer and going up/out.
-	
-	Therefore, upon the update, the console logs:
-	"{\"owner\": \"protagonist\", \"possessions\": [\"crown\", \"gold\"]}"
-	{owner: "protagonist", possessions: ["crown", "gold"]}
-	"protagonist"
+	Upon the update, the console logs:
 	[{item: "crown", owner: "protagonist"}, {item: "gold", owner: "protagonist"}]
+	"protagonist"
+	{owner: "protagonist", possessions: ["crown", "gold"]}
+	"{\"owner\": \"protagonist\", \"possessions\": [\"crown\", \"gold\"]}"
 */
 ```
 

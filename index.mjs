@@ -1,9 +1,12 @@
-import { writable, derived, get as readStore } from "svelte/store";
+import { derived } from "svelte/store";
 export default function(origins, derive, reflect, initial) {
 	var childDerivedSetter, originValues, allowDerive = true;
+	var reflectOldValues = "withOld" in reflect;
 	var wrappedDerive = (got, set) => {
 		childDerivedSetter = set;
-		originValues = got;
+		if (reflectOldValues) {
+			originValues = got;
+		}
 		if (allowDerive) {
 			let returned = derive(got, set);
 			if (derive.length < 2) {
@@ -27,23 +30,23 @@ export default function(origins, derive, reflect, initial) {
 		}
 		allowDerive = true;
 	};
+	if (reflectOldValues) {
+		reflect = reflect.withOld;
+	}
+	var reflectIsAsync = reflect.length >= (reflectOldValues ? 3 : 2);
 	var cleanup = null;
-	function doReflect(value) {
+	function doReflect(reflecting) {
 		if (cleanup) {
 			cleanup();
 			cleanup = null;
 		}
 
-		let isAsync = false;
-		let returned = reflect({
-			reflecting: value,
-			old: originValues,
-			get set() {
-				isAsync = true;
-				return sendUpstream;
-			},
-		});
-		if (isAsync) {
+		if (reflectOldValues) {
+			var returned = reflect(reflecting, originValues, sendUpstream);
+		} else {
+			var returned = reflect(reflecting, sendUpstream);
+		}
+		if (reflectIsAsync) {
 			if (typeof returned == "function") {
 				cleanup = returned;
 			}
