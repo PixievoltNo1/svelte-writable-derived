@@ -1,4 +1,4 @@
-## Unreleased
+## 2.0.0 (June 13, 2019)
 
 - Changed: `reflect` is now either a function with signature `(reflecting, set)` or an object with interface `{ withOld(reflecting, old, set) }`. Async-ness is determined by whether the function accepts a `set` parameter, just as for the `derive` callback.
 - Changed: The `reflect` callback now runs *after* subscriptions. Additional `set`/`update` calls while running subscriptions result in `reflect` being called only once with the most recent value.

@@ -9,7 +9,7 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
 <!-- toc -->
 
   * [Default export: `writableDerived()`](#default-export-writablederived)
-    + [New parameter: `reflect()`](#new-parameter-reflect)
+    + [New parameter: `reflect`](#new-parameter-reflect)
   * [Regarding Subscription-less `writableDerived` Stores](#regarding-subscription-less-writablederived-stores)
   * [Examples](#examples)
     + [Making an object store from a JSON string store](#making-an-object-store-from-a-json-string-store)
