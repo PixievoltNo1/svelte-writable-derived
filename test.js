@@ -158,7 +158,19 @@ describe("reflect parameter", function() {
 		testing.set(2);
 		assert.deepStrictEqual(actual, ["subscription", "reflect"]);
 	});
-	specify("called only once with latest value when subscriptions set or update");
+	specify("called only once with latest value when subscriptions set or update", function() {
+		var actual = [];
+		var testing = writableDerived(writable(), () => 1, ({reflecting, set}) => {
+			actual.push(reflecting);
+		});
+		testing.subscribe( (value) => {
+			if (value == 2) {
+				testing.set(3);
+			}
+		} );
+		testing.set(2);
+		assert.deepStrictEqual(actual, [3]);
+	});
 	describe("old origin values", function() {
 		specify("single origin", function() {
 			var origin = writable(1);
