@@ -171,6 +171,19 @@ describe("reflect parameter", function() {
 		testing.set(2);
 		assert.deepStrictEqual(actual, [3]);
 	});
+	specify("same primitive value set by subscriptions does not cancel call", function() {
+		var passed;
+		var testing = writableDerived(writable(), () => 1, (reflecting) => {
+			passed = reflecting == 2;
+		});
+		testing.subscribe( (value) => {
+			if (value == 2) {
+				testing.set(2);
+			}
+		} );
+		testing.set(2);
+		assert.ok(passed);
+	});
 	
 	function originSetTests(makeSetter) {
 		specify("sets single origin", function() {
