@@ -1,3 +1,7 @@
+## Unreleased
+
+- Fixed: Setting/updating a subscriptionless store to the primitive value it already had could cause a spurious `reflect` call
+
 ## 2.0.0 (June 13, 2019)
 
 - Changed: `reflect` is now either a function with signature `(reflecting, set)` or an object with interface `{ withOld(reflecting, old, set) }`. Async-ness is determined by whether the function accepts a `set` parameter, just as for the `derive` callback.

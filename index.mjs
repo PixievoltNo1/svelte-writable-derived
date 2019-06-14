@@ -57,16 +57,16 @@ export default function(origins, derive, reflect, initial) {
 	
 	var activeUpdateId = 0;
 	function update(fn) {
-		var firstCall = true, isUpdated, updateId = ++activeUpdateId, oldValue;
+		var tryingSet = false, isUpdated, updateId = ++activeUpdateId, oldValue;
 		var unsubscribe = childDerived.subscribe( (value) => {
-			if (firstCall) {
+			if (!tryingSet) {
 				oldValue = value;
-				firstCall = false;
 			} else {
 				isUpdated = true;
 			}
 		} );
 		var newValue = fn(oldValue);
+		tryingSet = true;
 		childDerivedSetter(newValue);
 		unsubscribe();
 		if (isUpdated && updateId == activeUpdateId) {
