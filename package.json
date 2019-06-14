@@ -1,6 +1,6 @@
 {
 	"name": "svelte-writable-derived",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Two-way data-transforming stores for Svelte",
 	"keywords": [
 		"svelte",
@@ -17,7 +17,8 @@
 		"index.mjs"
 	],
 	"scripts": {
-		"test": "mocha test.js"
+		"test": "mocha test.js",
+		"prepublish": "npm test"
 	},
 	"peerDependencies": {
 		"svelte": "^3.2.1"

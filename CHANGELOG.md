@@ -1,4 +1,4 @@
-## Unreleased
+## 2.0.1 (June 14, 2019)
 
 - Fixed: Setting/updating a store to a new primitive value, then setting/updating the store to the same value from its subscriptions would prevent `reflect` from being called
 - Fixed: Setting/updating a subscriptionless store to the primitive value it already had could cause a spurious `reflect` call
