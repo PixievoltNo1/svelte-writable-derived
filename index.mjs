@@ -1,5 +1,27 @@
 import { derived } from "svelte/store";
-export default function(origins, derive, reflect, initial) {
+/**
+ * @external Store
+ * @see [Svelte stores]{@link https://svelte.dev/docs#Store_contract}
+ */
+
+/**
+ * Create a store similar to {@link https://svelte.dev/docs#derived Svelte's `derived`}, but which
+ * has its own `set` and `update` methods and can send values back to the origin stores.
+ * {@link https://github.com/PixievoltNo1/svelte-writable-derived#default-export-writablederived Read more...}
+ * 
+ * @param {Store|Store[]} origins One or more stores to derive from. Same as
+ * {@link https://svelte.dev/docs#derived `derived`}'s 1st parameter.
+ * @param {!Function} derive The callback to determine the derived value. Same as
+ * {@link https://svelte.dev/docs#derived `derived`}'s 2nd parameter.
+ * @param {!Function|{withOld: !Function}} reflect Called when the
+ * derived store gets a new value via its `set` or `update` methods, and determines new values for
+ * the origin stores. {@link https://github.com/PixievoltNo1/svelte-writable-derived#new-parameter-reflect Read more...}
+ * @param [initial] The new store's initial value. Same as
+ * {@link https://svelte.dev/docs#derived `derived`}'s 3rd parameter.
+ * 
+ * @returns {Store} A writable store.
+ */
+export default function writableDerived(origins, derive, reflect, initial) {
 	var childDerivedSetter, originValues, allowDerive = true;
 	var reflectOldValues = "withOld" in reflect;
 	var wrappedDerive = (got, set) => {
