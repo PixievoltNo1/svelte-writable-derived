@@ -7,11 +7,12 @@
 		"svelte3"
 	],
 	"author": {
-		"name": "Pikadude No. 1",
-		"url": "https://pikadudeno1.com"
+		"name": "Pixievolt No. 1",
+		"url": "https://pixievoltno1.com"
 	},
-	"homepage": "https://github.com/PikadudeNo1/svelte-writable-derived",
-	"bugs": "https://github.com/PikadudeNo1/svelte-writable-derived/issues",
+	"homepage": "https://github.com/PixievoltNo1/svelte-writable-derived",
+	"bugs": "https://github.com/PixievoltNo1/svelte-writable-derived/issues",
+	"funding": "https://sponsus.org/u/pixievoltno1",
 	"module": "index.mjs",
 	"files": [
 		"index.mjs"
