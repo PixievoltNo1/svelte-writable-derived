@@ -6,14 +6,17 @@ For users of [Svelte](https://svelte.dev/) v3, this is a read-write variant of S
 This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
 
 <!-- Table of contents generated mostly by the markdown-toc package - however, it includes emoji in the URLs, and they need to be stripped for GitHub -->
+
 <!-- toc -->
 
-  * [Default export: `writableDerived()`](#default-export-writablederived)
+  * [Default & named export: `writableDerived()`](#default--named-export-writablederived)
     + [New parameter: `reflect`](#new-parameter-reflect)
-  * [Regarding Subscription-less `writableDerived` Stores](#regarding-subscription-less-writablederived-stores)
+  * [Named export: `propertyStore()`](#named-export-propertystore)
+  * [Regarding Subscription-less `svelte-writable-derived` Stores](#regarding-subscription-less-svelte-writable-derived-stores)
   * [Examples](#examples)
     + [Making an object store from a JSON string store](#making-an-object-store-from-a-json-string-store)
     + [Making a single-value store from an object store](#making-a-single-value-store-from-an-object-store)
+      - [... when the value is deeply nested in the object](#-when-the-value-is-deeply-nested-in-the-object)
     + [Making an object store from several single-value stores](#making-an-object-store-from-several-single-value-stores)
     + [Chaining all of the above together](#chaining-all-of-the-above-together)
   * [Browser compatibility](#browser-compatibility)
@@ -24,7 +27,7 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
 
 <!-- tocstop -->
 
-## Default export: `writableDerived()`
+## Default & named export: `writableDerived()`
 
 <i>Parameters: `origins` ([store](https://svelte.dev/tutorial/writable-stores) or array of stores), `derive` (function), [`reflect`](#new-parameter-reflect) (see documentation), optional `initial` (any)</i><br>
 <i>Returns a store with [`writable`](https://svelte.dev/docs#writable) methods</i>
@@ -47,9 +50,16 @@ If `reflect` takes a `set` parameter, it may return a cleanup function that will
 
 If the `reflect` parameter is provided a function via an object with a `withOld` property, that function will be called with an additional `old` parameter after `reflecting`. This is the initial value of the origin stores, and will be an array if `origins` was an array.
 
-## Regarding Subscription-less `writableDerived` Stores
+## Named export: `propertyStore()`
 
-One of the ways `writableDerived` emulates the behavior of Svelte's `derived` is that it does not subscribe to any origin store until the derived store itself has a subscription. However, `writableDerived` makes an exception: Calling the `set` and `update` methods when the derived store has no subscriptions will subscribe to & then unsubscribe from all its origins.
+<i>Parameters: `origin` ([store](https://svelte.dev/tutorial/writable-stores)), `propName` (string, symbol, or array of strings and symbols)</i><br>
+<i>Returns a store with [`writable`](https://svelte.dev/docs#writable) methods</i>
+
+A utility wrapper for `writableDerived`. Given a store containing an object, this function returns a store containing the value of the object's property `propName`. If `propName` is an array, it's used as a path to navigate nested objects.
+
+## Regarding Subscription-less `svelte-writable-derived` Stores
+
+One of the ways this package emulates the behavior of Svelte's `derived` is that it does not subscribe to any origin store until the derived store itself has a subscription. However, there's an exception: Calling the `set` and `update` methods when the derived store has no subscriptions will subscribe to & then unsubscribe from all its origins.
 
 ## Examples
 
@@ -74,20 +84,52 @@ console.log( get(jsonStore) ); // "{\"I'm not a property\": false}"
 
 ```javascript
 import { writable, get } from "svelte/store";
-import writableDerived from "svelte-writable-derived";
+import { propertyStore } from "svelte-writable-derived";
 
 var objectStore = writable({"a horse": "a horse", "of course": "of course"});
+var valueStore = propertyStore(objectStore, "a horse");
+console.log( get(valueStore) ); // "a horse"
+valueStore.set("*whinny*");
+console.log( get(objectStore) ); // {"a horse": "*whinny*", "of course": "of course"}
+
+// propertyStore is just a wrapper. You could also use writableDerived directly:
+
+import writableDerived from "svelte-writable-derived";
+
 var valueStore = writableDerived(
 	objectStore,
 	(object) => object["a horse"],
 	{ withOld(reflecting, object) {
 		object["a horse"] = reflecting;
-		return object; // needed to ensure objectStore.set is called with the proper value
+		return object; // needed to call objectStore.set with the proper value
 	} }
 );
-console.log( get(valueStore) ); // "a horse"
-valueStore.set("*whinny*");
-console.log( get(objectStore) ); // {"a horse": "*whinny*", "of course": "of course"}
+```
+
+#### ... when the value is deeply nested in the object
+
+```javascript
+import { writable, get } from "svelte/store";
+import { propertyStore } from "svelte-writable-derived";
+
+var objectStore = writable({ deeply: { buried: { item: "trash" } } });
+var valueStore = propertyStore(objectStore, ["deeply", "buried", "item"]);
+console.log( get(valueStore) ); // "trash"
+valueStore.set("treasure");
+console.log( get(objectStore) ); // { deeply: { buried: { item: "treasure" } } }
+
+// Using writableDerived directly:
+
+import writableDerived from "svelte-writable-derived";
+
+var valueStore = writableDerived(
+	objectStore,
+	(object) => object.deeply.buried.item,
+	{ withOld(reflecting, object) {
+		object.deeply.buried.item = reflecting;
+		return object; // needed to call objectStore.set with the proper value
+	} }
+);
 ```
 
 ### Making an object store from several single-value stores
@@ -112,7 +154,7 @@ console.log( get(valueStore1), get(valueStore2) ); // "rocket league" "over 9000
 ```javascript
 // What if Rube Goldberg were a JavaScript developer?
 import { writable, get } from "svelte/store";
-import writableDerived from "svelte-writable-derived";
+import { writableDerived, propertyStore } from "svelte-writable-derived";
 
 var jsonStore = writable(`{"owner": "dragon", "possessions": ["crown", "gold"]}`);
 var hoardStore = writableDerived(
@@ -121,22 +163,8 @@ var hoardStore = writableDerived(
 	(object) => JSON.stringify(object)
 );
 
-var hoarderStore = writableDerived(
-	objectStore,
-	(hoard) => hoard["owner"],
-	{ withOld(reflecting, hoard) {
-		hoard["owner"] = reflecting;
-		return hoard;
-	} }
-);
-var hoardContentsStore = writableDerived(
-	objectStore,
-	(hoard) => hoard["possessions"],
-	{ withOld(reflecting, hoard) {
-		hoard["possessions"] = reflecting;
-		return hoard;
-	} }
-);
+var hoarderStore = propertyStore(hoardStore, "owner");
+var hoardContentsStore = propertyStore(hoardStore, "possessions");
 
 var itemListStore = writableDerived(
 	[hoarderStore, hoardContentsStore],
@@ -184,7 +212,7 @@ I muchly appreciate any way you'd like to show your thanks - knowing people are 
 
 ## 💸 ... with money
 
-[I'm on Ko-Fi!](https://ko-fi.com/pikadudenoone) If you'd like to make a recurring donation, first please help me afford Ko-Fi Gold!
+You can make a one-time donation or become an ongoing sponsor at [my Sponsus page](https://sponsus.org/u/pixievoltno1), and sponsors can ask me to prioritize development of this package.
 
 ## 💌 ... with kind words
 

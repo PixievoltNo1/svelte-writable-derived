@@ -1,5 +1,5 @@
 var loadEsm = require("esm")(module);
-var writableDerived = loadEsm("./index.mjs").default;
+var { writableDerived, propertyStore, default: defaultExport } = loadEsm("./index.mjs");
 var { writable, readable, get } = loadEsm("svelte/store");
 var assert = require('assert').strict;
 
@@ -355,5 +355,54 @@ describe("subscribe method", function() {
 		} );
 		level1.set(2);
 		assert.deepStrictEqual(actual, [110, 220]);
+	});
+});
+describe("default export", function () {
+	specify("alias for writableDerived named export", function() {
+		assert.equal(defaultExport, writableDerived);
+	});
+});
+describe("propertyStore", function () {
+	describe("single-value propName", function () {
+		specify("new store has the specified property's value", function() {
+			var expected = 1;
+			var origin = writable({prop: expected});
+			var testing = propertyStore(origin, "prop");
+			assert.equal(get(testing), expected);
+		});
+		specify("setting the new store updates the original", function() {
+			var expected = { prop: 2 };
+			var origin = writable({ prop: 1 });
+			var testing = propertyStore(origin, "prop");
+			testing.set(expected.prop);
+			assert.deepEqual(get(origin), expected);
+		});
+	});
+	describe("array propName", function () {
+		specify("new store has the specified property's value", function() {
+			var expected = 1;
+			var origin = writable({ nested: { prop: expected } });
+			var testing = propertyStore(origin, ["nested", "prop"]);
+			assert.equal(get(testing), expected);
+		});
+		specify("setting the new store updates the original", function() {
+			var expected = { nested: { prop: 2 } };
+			var origin = writable({ nested: { prop: 1 } });
+			var testing = propertyStore(origin, ["nested", "prop"]);
+			testing.set(expected.nested.prop);
+			assert.deepEqual(get(origin), expected);
+		});
+		specify("mutating the array doesn't affect behavior", function() {
+			var origin = writable({
+				nested: { prop: 1 },
+				get incorrect() {
+					assert.fail("mutated array element used")
+				},
+			});
+			var propPath = ["nested", "prop"];
+			var testing = propertyStore(origin, propPath);
+			propPath[0] = "incorrect";
+			get(testing);
+		});
 	});
 });
