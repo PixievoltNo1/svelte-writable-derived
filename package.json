@@ -27,7 +27,7 @@
 	"devDependencies": {
 		"esm": "^3.2.25",
 		"mocha": "^7.2.0",
-		"svelte": "^3.22.3"
+		"svelte": "^3.24.0"
 	},
 	"license": "MIT"
 }
