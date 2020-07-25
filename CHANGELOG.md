@@ -1,3 +1,9 @@
+## 2.1.0 (July 24, 2020)
+
+- Added: New export [`propertyStore`](README.md#named-export-propertystore), a `writableDerived` wrapper for making a derived store from a stored object's property with less boilerplate
+- Added: Named export `writableDerived` is an alias for the default export, allowing you to get both exports with names if you so choose
+- JSDocs added. TypeScript can get type info from JSDocs, so TypeScript is now partially supported!
+
 ## 2.0.1 (June 14, 2019)
 
 - Fixed: Setting/updating a store to a new primitive value, then setting/updating the store to the same value from its subscriptions would prevent `reflect` from being called
