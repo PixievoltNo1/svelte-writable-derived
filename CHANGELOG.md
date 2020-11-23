@@ -1,3 +1,9 @@
+## 2.1.1 (November 22, 2020)
+
+No behavioral changes.
+
+- Added repository, exports, & sideEffects fields to package.json
+
 ## 2.1.0 (July 24, 2020)
 
 - Added: New export [`propertyStore`](README.md#named-export-propertystore), a `writableDerived` wrapper for making a derived store from a stored object's property with less boilerplate

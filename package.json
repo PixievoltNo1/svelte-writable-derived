@@ -1,10 +1,11 @@
 {
 	"name": "svelte-writable-derived",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"description": "Two-way data-transforming stores for Svelte",
 	"keywords": [
 		"svelte",
-		"svelte3"
+		"svelte3",
+		"store"
 	],
 	"author": {
 		"name": "Pixievolt No. 1",
@@ -12,8 +13,14 @@
 	},
 	"homepage": "https://github.com/PixievoltNo1/svelte-writable-derived",
 	"bugs": "https://github.com/PixievoltNo1/svelte-writable-derived/issues",
+	"repository": "github:PixievoltNo1/svelte-writable-derived",
 	"funding": "https://sponsus.org/u/pixievoltno1",
 	"module": "index.mjs",
+	"exports": {
+		".": "./index.mjs",
+		"./package.json": "./package.json"
+	},
+	"sideEffects": false,
 	"files": [
 		"index.mjs"
 	],
