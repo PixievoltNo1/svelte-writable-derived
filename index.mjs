@@ -1,4 +1,4 @@
-import { derived } from "svelte/store";
+import { derived, get } from "svelte/store";
 /**
  * @external Store
  * @see [Svelte stores]{@link https://svelte.dev/docs#Store_contract}
@@ -77,22 +77,32 @@ export default function writableDerived(origins, derive, reflect, initial) {
 		}
 	}
 	
-	var doneUpdateId = 0;
+	var tryingSet = false;
 	function update(fn) {
-		var tryingSet = false, isUpdated, updateId = doneUpdateId + 1, oldValue;
+		var isUpdated, mutatedBySubscriptions, oldValue, newValue;
+		if (tryingSet) {
+			newValue = fn( get(childDerived) );
+			childDerivedSetter(newValue);
+			return;
+		}
 		var unsubscribe = childDerived.subscribe( (value) => {
 			if (!tryingSet) {
 				oldValue = value;
-			} else {
+			} else if (!isUpdated) {
 				isUpdated = true;
+			} else {
+				mutatedBySubscriptions = true;
 			}
 		} );
-		var newValue = fn(oldValue);
+		newValue = fn(oldValue);
 		tryingSet = true;
 		childDerivedSetter(newValue);
 		unsubscribe();
-		if (isUpdated && updateId > doneUpdateId) {
-			doneUpdateId = updateId;
+		tryingSet = false;
+		if (mutatedBySubscriptions) {
+			newValue = get(childDerived);
+		}
+		if (isUpdated) {
 			doReflect(newValue);
 		}
 	}

@@ -1,3 +1,7 @@
+## Unreleased
+
+- Fixed `reflect` not getting the latest value after a subscription updates its own store in Svelte >=3.6.9 (#13)
+
 ## 2.1.1 (November 22, 2020)
 
 No behavioral changes.
