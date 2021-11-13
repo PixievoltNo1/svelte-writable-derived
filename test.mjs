@@ -1,7 +1,6 @@
-var loadEsm = require("esm")(module);
-var { writableDerived, propertyStore, default: defaultExport } = loadEsm("./index.mjs");
-var { writable, readable, get } = loadEsm("svelte/store");
-var assert = require('assert').strict;
+import { writableDerived, propertyStore, default as defaultExport } from "./index.mjs";
+import { writable, readable, get } from "svelte/store";
+import { strict as assert} from "assert";
 
 describe("origins parameter", function() {
 	specify("get subscribed to only when the derived store is subscribed to", function() {
