@@ -119,7 +119,7 @@ export { writableDerived };
  * [Read more...](https://github.com/PixievoltNo1/svelte-writable-derived#named-export-propertystore)
  * 
  * @param {Store} origin The store containing the object to get/set from.
- * @param {string|symbol|Array<string|symbol>} propName The property to get/set, or a path of
+ * @param {string|number|symbol|Array<string|number|symbol>} propName The property to get/set, or a path of
  * properties in nested objects.
  *
  * @returns {Store} A writable store.

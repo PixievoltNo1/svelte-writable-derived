@@ -16,6 +16,7 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
   * [Examples](#examples)
     + [Making an object store from a JSON string store](#making-an-object-store-from-a-json-string-store)
     + [Making a single-value store from an object store](#making-a-single-value-store-from-an-object-store)
+      - [... when the object is an array](#-when-the-object-is-an-array)
       - [... when the value is deeply nested in the object](#-when-the-value-is-deeply-nested-in-the-object)
     + [Making an object store from several single-value stores](#making-an-object-store-from-several-single-value-stores)
     + [Chaining all of the above together](#chaining-all-of-the-above-together)
@@ -52,7 +53,7 @@ If the `reflect` parameter is provided a function via an object with a `withOld`
 
 ## Named export: `propertyStore()`
 
-<i>Parameters: `origin` ([store](https://svelte.dev/tutorial/writable-stores)), `propName` (string, symbol, or array of strings and symbols)</i><br>
+<i>Parameters: `origin` ([store](https://svelte.dev/tutorial/writable-stores)), `propName` (string, number, symbol, or array of strings/numbers/symbols)</i><br>
 <i>Returns a store with [`writable`](https://svelte.dev/docs#writable) methods</i>
 
 A utility wrapper for `writableDerived`. Given a store containing an object, this function returns a store containing the value of the object's property `propName`. If `propName` is an array, it's used as a path to navigate nested objects.
@@ -104,6 +105,22 @@ var valueStore = writableDerived(
 		return object; // needed to call objectStore.set with the proper value
 	} }
 );
+```
+
+#### ... when the object is an array
+
+```javascript
+// An array is an object with numerically-named properties.
+// Access them using a number for the propName parameter.
+
+import { writable, get } from "svelte/store";
+import { propertyStore } from "svelte-writable-derived";
+
+var treasureCoordinates = writable([7, -2, 31]);
+var treasureElevation = propertyStore(treasureCoordinates, 1);
+console.log( get(treasureElevation) ); // -2
+treasureElevation.set(1); // dig up the treasure
+console.log( get(treasureCoordinates) ); // [7, 1, 31]
 ```
 
 #### ... when the value is deeply nested in the object
