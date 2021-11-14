@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Fixed `reflect` not getting the latest value after a subscription updates its own store in Svelte >=3.6.9 (#13)
+- Fixed `reflect` not getting the latest value after a subscription updates its own store in Svelte >=3.6.9 ([#13](https://github.com/PixievoltNo1/svelte-writable-derived/issues/13))
 
 ## 2.1.1 (November 22, 2020)
 
@@ -10,7 +10,7 @@ No behavioral changes.
 
 ## 2.1.0 (July 24, 2020)
 
-- Added: New export [`propertyStore`](README.md#named-export-propertystore), a `writableDerived` wrapper for making a derived store from a stored object's property with less boilerplate
+- Added: New export [`propertyStore`](README.md#named-export-propertystore), a `writableDerived` wrapper for making a derived store from a stored object's property with less boilerplate ([#5](https://github.com/PixievoltNo1/svelte-writable-derived/issues/5))
 - Added: Named export `writableDerived` is an alias for the default export, allowing you to get both exports with names if you so choose
 - JSDocs added. TypeScript can get type info from JSDocs, so TypeScript is now partially supported!
 
