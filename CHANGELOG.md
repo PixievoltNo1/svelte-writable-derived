@@ -1,7 +1,7 @@
 ## 2.1.2 (November 14, 2021)
 
 - Fixed `reflect` not getting the latest value after a subscription updates its own store in Svelte >=3.6.9 ([#13](https://github.com/PixievoltNo1/svelte-writable-derived/issues/13))
-- Documented in the readme & JSDocs that `propertyStore` accepts numerical `propName`s (though this is newly-documented, it's in a SemVer-patch release to indicate it's worked since 2.1.0)
+- Documented in the readme & JSDocs that `propertyStore` accepts numerical `propName`s (though this is newly-documented, it's in a SemVer-patch release to indicate it's worked since 2.1.0) ([#12](https://github.com/PixievoltNo1/svelte-writable-derived/issues/12))
 - JSDocs now use Markdown \[links] instead of JSDoc {@link}s, working around VSCode bugs with the latter
 
 ## 2.1.1 (November 22, 2020)
