@@ -93,10 +93,44 @@ export { writableDerived };
  * Create a store for a property value in an object contained in another store.
  * [Read more...](https://github.com/PixievoltNo1/svelte-writable-derived#named-export-propertystore)
  *
- * @param {Store} origin The store containing the object to get/set from.
- * @param {string|number|symbol|Array<string|number|symbol>} propName The property to get/set, or a path of
+ * @param origin The store containing the object to get/set from.
+ * @param propName The property to get/set, or a path of
  * properties in nested objects.
  *
- * @returns {Store} A writable store.
+ * @returns A writable store.
  */
-export function propertyStore(origin: any, propName: string | number | symbol | Array<string | number | symbol>): any;
+export function propertyStore<O extends object, K extends keyof O>(
+    origin: Writable<O>,
+    propName: K | [K]
+): Writable<O[K]>;
+
+export function propertyStore<O extends object, K1 extends keyof O, K2 extends keyof O[K1]>(
+    origin: Writable<O>,
+    propName: [K1, K2]
+): Writable<O[K1][K2]>;
+
+export function propertyStore<
+    O extends object,
+    K1 extends keyof O,
+    K2 extends keyof O[K1],
+    K3 extends keyof O[K1][K2]
+>(
+    origin: Writable<O>,
+    propName: [K1, K2, K3]
+): Writable<O[K1][K2][K3]>;
+
+export function propertyStore<
+    O extends object,
+    K1 extends keyof O,
+    K2 extends keyof O[K1],
+    K3 extends keyof O[K1][K2],
+    K4 extends keyof O[K1][K2][K3]
+>(
+    origin: Writable<O>,
+    propName: [K1, K2, K3, K4]
+): Writable<O[K1][K2][K3][K4]>;
+
+export function propertyStore(
+    origin: Writable<object>,
+    propName: string | number | symbol | Array<string | number | symbol>
+): Writable<any>;
