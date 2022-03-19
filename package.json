@@ -16,13 +16,18 @@
 	"repository": "github:PixievoltNo1/svelte-writable-derived",
 	"funding": "https://sponsus.org/u/pixievoltno1",
 	"module": "index.mjs",
+	"types": "index.d.ts",
 	"exports": {
-		".": "./index.mjs",
+		".": {
+			"default": "./index.mjs",
+			"types": "./index.d.ts"
+		},
 		"./package.json": "./package.json"
 	},
 	"sideEffects": false,
 	"files": [
-		"index.mjs"
+		"index.mjs",
+		"index.d.ts"
 	],
 	"scripts": {
 		"test": "mocha test.mjs",
