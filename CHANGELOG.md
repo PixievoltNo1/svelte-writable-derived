@@ -1,3 +1,9 @@
+## 2.1.3 (March 20, 2022)
+
+No behavioral changes.
+
+- TypeScript fully supported (thanks, [qu1ncyk](https://github.com/qu1ncyk)!)
+
 ## 2.1.2 (November 14, 2021)
 
 - Fixed `reflect` not getting the latest value after a subscription updates its own store in Svelte >=3.6.9 ([#13](https://github.com/PixievoltNo1/svelte-writable-derived/issues/13))
