@@ -1,7 +1,7 @@
 # svelte-writable-derived
 [![npm](https://img.shields.io/npm/v/svelte-writable-derived.svg)](https://www.npmjs.com/package/svelte-writable-derived) [![Bundle size](https://img.shields.io/bundlephobia/minzip/svelte-writable-derived.svg)](https://bundlephobia.com/result?p=svelte-writable-derived) [![License](https://img.shields.io/github/license/PixievoltNo1/svelte-writable-derived.svg)](https://github.com/PixievoltNo1/svelte-writable-derived/blob/master/LICENSE.txt)
 
-For users of [Svelte](https://svelte.dev/) v3, this is a read-write variant of Svelte's [derived stores](https://svelte.dev/tutorial/derived-stores) that accepts an extra callback to send values back to the source. It builds on the derived & writable stores provided by Svelte, and emulates their behavior as closely as possible.
+For users of [Svelte](https://svelte.dev/) v3, this is a read-write variant of Svelte's [derived stores](https://svelte.dev/docs#run-time-svelte-store-derived) that accepts an extra callback to send values back to the source. It builds on the derived & writable stores provided by Svelte, and emulates their behavior as closely as possible.
 
 This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
 
