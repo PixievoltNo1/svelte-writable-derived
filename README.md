@@ -30,10 +30,10 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
 
 ## Default & named export: `writableDerived()`
 
-<i>Parameters: `origins` ([store](https://svelte.dev/tutorial/writable-stores) or array of stores), `derive` (function), [`reflect`](#new-parameter-reflect) (see documentation), optional `initial` (any)</i><br>
-<i>Returns a store with [`writable`](https://svelte.dev/docs#writable) methods</i>
+<i>Parameters: `origins` ([store](https://svelte.dev/docs#component-format-script-4-prefix-stores-with-$-to-access-their-values-store-contract) or array of stores), `derive` (function), [`reflect`](#new-parameter-reflect) (see documentation), optional `initial` (any)</i><br>
+<i>Returns a store with [`writable`](https://svelte.dev/docs#run-time-svelte-store-writable) methods</i>
 
-Create a store that behaves similarly to [Svelte's `derived`](https://svelte.dev/docs#derived), with `origins`, `derive`, and `initial` working like its 1st, 2nd, and 3rd parameters respectively. Values introduced to the store via its `set` and `update` methods are passed to the new 3rd parameter, `reflect`, which can in turn set values for the origin stores.
+Create a store that behaves similarly to [Svelte's `derived`](https://svelte.dev/docs#run-time-svelte-store-derived), with `origins`, `derive`, and `initial` working like its 1st, 2nd, and 3rd parameters respectively. Values introduced to the store via its `set` and `update` methods are passed to the new 3rd parameter, `reflect`, which can in turn set values for the origin stores.
 
 It is not possible for `derived` and `reflect` to trigger calls to each other, provided they only use the `set` callbacks provided to them and do not reach out to any outer `set` or `update`.
 
@@ -53,8 +53,8 @@ If the `reflect` parameter is provided a function via an object with a `withOld`
 
 ## Named export: `propertyStore()`
 
-<i>Parameters: `origin` ([store](https://svelte.dev/tutorial/writable-stores)), `propName` (string, number, symbol, or array of strings/numbers/symbols)</i><br>
-<i>Returns a store with [`writable`](https://svelte.dev/docs#writable) methods</i>
+<i>Parameters: `origin` ([store](https://svelte.dev/docs#component-format-script-4-prefix-stores-with-$-to-access-their-values-store-contract)), `propName` (string, number, symbol, or array of strings/numbers/symbols)</i><br>
+<i>Returns a store with [`writable`](https://svelte.dev/docs#run-time-svelte-store-writable) methods</i>
 
 A utility wrapper for `writableDerived`. Given a store containing an object, this function returns a store containing the value of the object's property `propName`. If `propName` is an array, it's used as a path to navigate nested objects.
 
