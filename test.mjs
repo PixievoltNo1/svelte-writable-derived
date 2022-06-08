@@ -227,6 +227,58 @@ describe("reflect parameter", function() {
 			testing.set(1);
 			return whenDone( () => {} );
 		});
+		specify("allows derive if a single origin updates itself", function () {
+			var deriveNeeded = false, deriveHappened = false;
+			var origin = writable(0);
+			var { reflect, whenDone } = makeSetter(1);
+			origin.subscribe( (value) => {
+				if (value == 1) {
+					deriveNeeded = true;
+					origin.set(2);
+				}
+			} );
+			var testing = writableDerived(origin, () => {
+				if (deriveNeeded) {
+					deriveHappened = true;
+				}
+				return 0;
+			}, reflect);
+			testing.set(1);
+			return whenDone( () => { assert.ok(deriveHappened); } );
+		});
+		specify("allows derive if multiple origins update themselves", function () {
+			var derive1Needed = false, derive1Happened = false;
+			var derive2Needed = false, derive2Happened = false;
+			var origins = [writable(1), writable(2), writable(3), writable(4)];
+			var { reflect, whenDone } = makeSetter([5, 6, 7, 8]);
+			origins[1].subscribe( (value) => {
+				if (value == 6) {
+					derive1Needed = true;
+					origins[1].set(9);
+				}
+			} );
+			origins[3].subscribe( (value) => {
+				if (value == 8) {
+					derive1Needed = true;
+					origins[3].set(10);
+				}
+			} );
+			var testing = writableDerived(origins, (values) => {
+				if (derive2Needed) {
+					assert.deepStrictEqual(values, [5, 9, 7, 10]);
+					derive2Happened = true;
+				} else if (derive1Needed) {
+					assert.deepStrictEqual(values, [5, 9, 3, 4]);
+					derive1Happened = true;
+				}
+				return 0;
+			}, reflect);
+			testing.set(1);
+			return whenDone( () => {
+				assert.ok(derive1Happened);
+				assert.ok(derive2Happened);
+			} );
+		});
 	}
 	describe("synchronous form", function() {
 		originSetTests(function makeSetter(setValue) {
