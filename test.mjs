@@ -260,7 +260,7 @@ describe("reflect parameter", function() {
 			} );
 			origins[3].subscribe( (value) => {
 				if (value == 8) {
-					derive1Needed = true;
+					derive2Needed = true;
 					origins[3].set(10);
 				}
 			} );
