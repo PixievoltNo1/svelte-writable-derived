@@ -243,6 +243,7 @@ describe("reflect parameter", function() {
 				}
 				return 0;
 			}, reflect);
+			testing.subscribe( () => {} );
 			testing.set(1);
 			return whenDone( () => { assert.ok(deriveHappened); } );
 		});
@@ -273,6 +274,7 @@ describe("reflect parameter", function() {
 				}
 				return 0;
 			}, reflect);
+			testing.subscribe( () => { } );
 			testing.set(1);
 			return whenDone( () => {
 				assert.ok(derive1Happened);
