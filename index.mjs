@@ -22,14 +22,14 @@ import { derived, get } from "svelte/store";
  * @returns {Store} A writable store.
  */
 export default function writableDerived(origins, derive, reflect, initial) {
-	var childDerivedSetter, originValues, allowDerive = true;
+	var childDerivedSetter, originValues, blockNextDerive = false;
 	var reflectOldValues = "withOld" in reflect;
 	var wrappedDerive = (got, set) => {
 		childDerivedSetter = set;
 		if (reflectOldValues) {
 			originValues = got;
 		}
-		if (allowDerive) {
+		if (!blockNextDerive) {
 			let returned = derive(got, set);
 			if (derive.length < 2) {
 				set(returned);
@@ -37,20 +37,22 @@ export default function writableDerived(origins, derive, reflect, initial) {
 				return returned;
 			}
 		}
+		blockNextDerive = false;
 	};
 	var childDerived = derived(origins, wrappedDerive, initial);
 	
 	var singleOrigin = !Array.isArray(origins);
 	var sendUpstream = (setWith) => {
-		allowDerive = false;
 		if (singleOrigin) {
+			blockNextDerive = true;
 			origins.set(setWith);
 		} else {
 			setWith.forEach( (value, i) => {
+				blockNextDerive = true;
 				origins[i].set(value);
 			} );
 		}
-		allowDerive = true;
+		blockNextDerive = false;
 	};
 	if (reflectOldValues) {
 		reflect = reflect.withOld;
