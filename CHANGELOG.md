@@ -1,3 +1,7 @@
+## Unreleased
+
+- TypeScript: Any stores you pass to `writableDerived` that `reflect` will be setting must now include a `set` method (and stores passed to `propertyStore` no longer need an `update` method). ([#19](https://github.com/PixievoltNo1/svelte-writable-derived/issues/19))
+
 ## 2.1.3 (March 20, 2022)
 
 No behavioral changes.
