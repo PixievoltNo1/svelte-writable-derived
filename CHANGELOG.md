@@ -1,4 +1,4 @@
-## Unreleased
+## 2.1.4 (June🏳️‍🌈 22, 2022)
 
 - Fixed `derive` not getting called when an origin was set by its own subscription in response to `reflect` ([#18](https://github.com/PixievoltNo1/svelte-writable-derived/issues/18))
 - TypeScript changes ([#19](https://github.com/PixievoltNo1/svelte-writable-derived/issues/19)):
