@@ -13,8 +13,9 @@ type StoresValues<T> = T extends Readable<infer U> ? U :
     { [K in keyof T]: T[K] extends Readable<infer U> ? U : never };
 
 /** Values sent to origin stores. */
-type SetValues<T> = T extends MinimalWritable<infer U> ? U :
-    { [K in keyof T]: T[K] extends MinimalWritable <infer U> ? U : never };
+type SetValues<T> = T extends MinimalWritable<infer U> ? U : any[];
+// See this discussion for why the array form is underspecified:
+// https://github.com/PixievoltNo1/svelte-writable-derived/issues/19
 
 /**
  * Create a store similar to [Svelte's `derived`](https://svelte.dev/docs#derived), but which
@@ -50,14 +51,14 @@ export default function writableDerived<S extends Stores, T>(
 export default function writableDerived<S extends Stores, T>(
     origins: S,
     derive: (values: StoresValues<S>) => T,
-    reflect: (reflecting: T, set: (value: SetValues<S>) => void) => void,
+    reflect: (reflecting: T, set: (value: SetValues<S>) => void) => ( () => void ) | void,
     initial?: T
 ): Writable<T>;
 
 export default function writableDerived<S extends Stores, T>(
     origins: S,
     derive: (values: StoresValues<S>, set: (value: T) => void) => void,
-    reflect: (reflecting: T, set: (value: SetValues<S>) => void) => void,
+    reflect: (reflecting: T, set: (value: SetValues<S>) => void) => ( () => void ) | void,
     initial?: T
 ): Writable<T>;
 
@@ -79,7 +80,8 @@ export default function writableDerived<S extends Stores, T>(
     origins: S,
     derive: (values: StoresValues<S>) => T,
     reflect: {
-        withOld: (reflecting: T, old: StoresValues<S>, set: (value: SetValues<S>) => void) => void
+        withOld: (reflecting: T, old: StoresValues<S>, set: (value: SetValues<S>) => void)
+            => ( () => void ) | void
     },
     initial?: T
 ): Writable<T>;
@@ -88,7 +90,8 @@ export default function writableDerived<S extends Stores, T>(
     origins: S,
     derive: (values: StoresValues<S>, set: (value: T) => void) => void,
     reflect: {
-        withOld: (reflecting: T, old: StoresValues<S>, set: (value: SetValues<S>) => void) => void
+        withOld: (reflecting: T, old: StoresValues<S>, set: (value: SetValues<S>) => void)
+            => ( () => void ) | void
     },
     initial?: T
 ): Writable<T>;

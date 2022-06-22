@@ -1,7 +1,11 @@
 ## Unreleased
 
 - Fixed `derive` not getting called when an origin was set by its own subscription in response to `reflect` ([#18](https://github.com/PixievoltNo1/svelte-writable-derived/issues/18))
-- TypeScript: Any stores you pass to `writableDerived` that `reflect` will be setting must now include a `set` method (and stores passed to `propertyStore` no longer need an `update` method). ([#19](https://github.com/PixievoltNo1/svelte-writable-derived/issues/19))
+- TypeScript changes ([#19](https://github.com/PixievoltNo1/svelte-writable-derived/issues/19)):
+	- Using a single origin store now requires it implement the `set` method from Svelte's `Writable` type
+	- Improved definitions of `reflect` to help TypeScript choose the correct `writableDerived` overload
+	- When `origins` is an array, the type `reflect` can set with has been loosened to `any[]`. This is a temporary measure to reduce undecipherable TypeScript errors.
+	- Stores passed to `propertyStore` are no longer required to have an `update` method
 
 ## 2.1.3 (March 20, 2022)
 
