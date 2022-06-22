@@ -18,19 +18,19 @@ type SetValues<T> = T extends MinimalWritable<infer U> ? U : any[];
 // https://github.com/PixievoltNo1/svelte-writable-derived/issues/19
 
 /**
- * Create a store similar to [Svelte's `derived`](https://svelte.dev/docs#derived), but which
+ * Create a store similar to [Svelte's `derived`](https://svelte.dev/docs#run-time-svelte-store-writable), but which
  * has its own `set` and `update` methods and can send values back to the origin stores.
  * [Read more...](https://github.com/PixievoltNo1/svelte-writable-derived#default-export-writablederived)
  *
  * @param origins One or more stores to derive from. Same as
- * [`derived`](https://svelte.dev/docs#derived)'s 1st parameter.
+ * [`derived`](https://svelte.dev/docs#run-time-svelte-store-writable)'s 1st parameter.
  * @param derive The callback to determine the derived value. Same as
- * [`derived`](https://svelte.dev/docs#derived)'s 2nd parameter.
+ * [`derived`](https://svelte.dev/docs#run-time-svelte-store-writable)'s 2nd parameter.
  * @param reflect Called when the
  * derived store gets a new value via its `set` or `update` methods, and determines new values for
  * the origin stores. [Read more...](https://github.com/PixievoltNo1/svelte-writable-derived#new-parameter-reflect)
  * @param [initial] The new store's initial value. Same as
- * [`derived`](https://svelte.dev/docs#derived)'s 3rd parameter.
+ * [`derived`](https://svelte.dev/docs#run-time-svelte-store-writable)'s 3rd parameter.
  *
  * @returns A writable store.
  */

@@ -6,6 +6,7 @@
 	- Improved definitions of `reflect` to help TypeScript choose the correct `writableDerived` overload
 	- When `origins` is an array, the type `reflect` can set with has been loosened to `any[]`. This is a temporary measure to reduce undecipherable TypeScript errors.
 	- Stores passed to `propertyStore` are no longer required to have an `update` method
+- Fixed links meant to point to specific sections of the Svelte documentation in the readme and JSDocs
 
 ## 2.1.3 (March 20, 2022)
 
