@@ -1,6 +1,6 @@
 {
 	"name": "svelte-writable-derived",
-	"version": "2.1.4",
+	"version": "2.1.5",
 	"description": "Two-way data-transforming stores for Svelte",
 	"keywords": [
 		"svelte",
