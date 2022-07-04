@@ -1,5 +1,7 @@
 ## 2.1.5 (July 3, 2022)
 
+No behavior changes.
+
 - Specify package.json's default conditional export last, resolving errors with tools like Webpack that strictly require it ([#21](https://github.com/PixievoltNo1/svelte-writable-derived/issues/21))
 
 ## 2.1.4 (June🏳️‍🌈 22, 2022)
