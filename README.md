@@ -3,6 +3,8 @@
 
 For users of [Svelte](https://svelte.dev/) v3, this is a read-write variant of Svelte's [derived stores](https://svelte.dev/tutorial/derived-stores) that accepts an extra callback to send values back to the source. It builds on the derived & writable stores provided by Svelte, and emulates their behavior as closely as possible.
 
+👀 **[Version 3](https://www.npmjs.com/package/svelte-writable-derived/v/next) is now available!** [Learn more and leave feedback.](https://github.com/PixievoltNo1/svelte-writable-derived/issues/23)
+
 This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
 
 <!-- Table of contents generated mostly by the markdown-toc package - however, it includes emoji in the URLs, and they need to be stripped for GitHub -->
@@ -50,6 +52,8 @@ The provided function is called when the derived store gets a new value via its 
 If `reflect` takes a `set` parameter, it may return a cleanup function that will be called immediately before the next `reflect` call. (Unlike its `derive` counterpart, `reflect`'s cleanup function is never called in response to unsubscriptions.)
 
 If the `reflect` parameter is provided a function via an object with a `withOld` property, that function will be called with an additional `old` parameter after `reflecting`. This is the initial value of the origin stores, and will be an array if `origins` was an array.
+
+**⚠ Asynchronous forms of `reflect` (those that take a `set` parameter) are deprecated and have been removed in v3.** [Learn more and leave feedback.](https://github.com/PixievoltNo1/svelte-writable-derived/issues/23)
 
 ## Named export: `propertyStore()`
 
