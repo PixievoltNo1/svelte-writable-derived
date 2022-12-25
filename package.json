@@ -1,10 +1,11 @@
 {
 	"name": "svelte-writable-derived",
-	"version": "2.1.5",
+	"version": "3.0.0",
 	"description": "Two-way data-transforming stores for Svelte",
 	"keywords": [
 		"svelte",
 		"svelte3",
+		"derived",
 		"store"
 	],
 	"author": {
@@ -38,7 +39,7 @@
 	},
 	"devDependencies": {
 		"mocha": "^9.2.2",
-		"svelte": "^3.54.0"
+		"svelte": "^3.55.0"
 	},
 	"license": "MIT"
 }
