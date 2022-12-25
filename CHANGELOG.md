@@ -1,3 +1,10 @@
+## 3.0.0 (published as `@next` December 24🎄, 2022)
+
+- Changed: `reflect` now has only one form with signature `(reflecting, old)`. It can no longer set origins asynchronously. ([#23](https://github.com/PixievoltNo1/svelte-writable-derived/issues/23))
+- Typescript improvements:
+	- When `origins` is an array, values returned by `reflect` must be compatible with its stores, just as when `origins` is a single store ([#19](https://github.com/PixievoltNo1/svelte-writable-derived/issues/19))
+	- `writableDerived` is reduced from 8 to 2 signatures, making TypeScript error messages more useful
+
 ## 2.1.5 (July 3, 2022)
 
 No behavior changes.

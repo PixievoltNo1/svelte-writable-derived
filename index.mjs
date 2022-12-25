@@ -23,7 +23,7 @@ import { derived, get } from "svelte/store";
  */
 export default function writableDerived(origins, derive, reflect, initial) {
 	var childDerivedSetter, originValues, blockNextDerive = false;
-	var reflectOldValues = "withOld" in reflect;
+	var reflectOldValues = reflect.length >= 2;
 	var wrappedDerive = (got, set) => {
 		childDerivedSetter = set;
 		if (reflectOldValues) {
@@ -42,7 +42,8 @@ export default function writableDerived(origins, derive, reflect, initial) {
 	var childDerived = derived(origins, wrappedDerive, initial);
 	
 	var singleOrigin = !Array.isArray(origins);
-	var sendUpstream = (setWith) => {
+	function doReflect(reflecting) {
+		var setWith = reflect(reflecting, originValues);
 		if (singleOrigin) {
 			blockNextDerive = true;
 			origins.set(setWith);
@@ -53,30 +54,6 @@ export default function writableDerived(origins, derive, reflect, initial) {
 			} );
 		}
 		blockNextDerive = false;
-	};
-	if (reflectOldValues) {
-		reflect = reflect.withOld;
-	}
-	var reflectIsAsync = reflect.length >= (reflectOldValues ? 3 : 2);
-	var cleanup = null;
-	function doReflect(reflecting) {
-		if (cleanup) {
-			cleanup();
-			cleanup = null;
-		}
-
-		if (reflectOldValues) {
-			var returned = reflect(reflecting, originValues, sendUpstream);
-		} else {
-			var returned = reflect(reflecting, sendUpstream);
-		}
-		if (reflectIsAsync) {
-			if (typeof returned == "function") {
-				cleanup = returned;
-			}
-		} else {
-			sendUpstream(returned);
-		}
 	}
 	
 	var tryingSet = false;
@@ -131,10 +108,10 @@ export function propertyStore(origin, propName) {
 		return writableDerived(
 			origin,
 			(object) => object[propName],
-			{ withOld(reflecting, object) {
+			(reflecting, object) => {
 				object[propName] = reflecting;
 				return object;
-			} }
+			},
 		);
 	} else {
 		let props = propName.concat();
@@ -146,14 +123,14 @@ export function propertyStore(origin, propName) {
 				}
 				return value;
 			},
-			{ withOld(reflecting, object) {
+			(reflecting, object) => {
 				let target = object;
 				for (let i = 0; i < props.length - 1; ++i) {
 					target = target[ props[i] ];
 				}
 				target[ props[props.length - 1] ] = reflecting;
 				return object;
-			} }
+			},
 		);
 	}
 }

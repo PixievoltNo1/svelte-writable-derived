@@ -35,21 +35,17 @@ This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in th
 
 Create a store that behaves similarly to [Svelte's `derived`](https://svelte.dev/docs#run-time-svelte-store-derived), with `origins`, `derive`, and `initial` working like its 1st, 2nd, and 3rd parameters respectively. Values introduced to the store via its `set` and `update` methods are passed to the new 3rd parameter, `reflect`, which can in turn set values for the origin stores.
 
-It is not possible for `derived` and `reflect` to trigger calls to each other, provided they only use the `set` callbacks provided to them and do not reach out to any outer `set` or `update`.
+As long as `derived` and `reflect` set stores only by the means provided to them and not via any store's methods, they won't trigger calls to each other.
 
 ### New parameter: `reflect`
 
-<i>One of the following:</i>
-* <i>Function with parameters: `reflecting` (any), optional `set` (function)</i>
-* <i>Object with property `withOld` containing function with parameters: `reflecting` (any), `old` (any), optional `set` (function)</i>
+<i>Function with parameters: `reflecting` (any), optional `old` (any)</i>
 
-The provided function is called when the derived store gets a new value via its `set` and `update` methods (not via the `derive` callback). Its `reflecting` parameter is this new value. The `set` parameter accepts a value to set in the origin store, if `origins` was a store, or an array of values to set if `origins` was an array. If the `set` parameter receives an array that's sparse or shorter than `origins`, it will only set the stores it has elements for, and other stores don't necessarily need to be writable. If the function doesn't take a `set` parameter, its return value will be used to set origin stores just as if it were passed to `set`.
+This function is called when the derived store gets a new value via its `set` and `update` methods (not via the `derive` callback). Its `reflecting` parameter is this new value, and `old` is the origin store's current value, or an array of values if `origins` is an array. It must return a value to set in the origin store, or an array of values to set if `origins` was an array. If the returned array is sparse or shorter than `origins`, it will only set the stores it has elements for, and other stores don't necessarily need to be writable.
 
 `reflect` is called after the derived store's subscriptions are called. If the derived store has its `set` and/or `update` methods called again in the process of calling its subscriptions, `reflect` will be called only once, with the most-recently-set value.
 
-If `reflect` takes a `set` parameter, it may return a cleanup function that will be called immediately before the next `reflect` call. (Unlike its `derive` counterpart, `reflect`'s cleanup function is never called in response to unsubscriptions.)
-
-If the `reflect` parameter is provided a function via an object with a `withOld` property, that function will be called with an additional `old` parameter after `reflecting`. This is the initial value of the origin stores, and will be an array if `origins` was an array.
+`arguments` and rest parameters will not receive `old` unless the function's [length](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/length) is at least 2.
 
 ## Named export: `propertyStore()`
 
