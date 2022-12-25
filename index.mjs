@@ -13,9 +13,9 @@ import { derived, get } from "svelte/store";
  * [`derived`](https://svelte.dev/docs#run-time-svelte-store-writable)'s 1st parameter.
  * @param {!Function} derive The callback to determine the derived value. Same as
  * [`derived`](https://svelte.dev/docs#run-time-svelte-store-writable)'s 2nd parameter.
- * @param {!Function|{withOld: !Function}} reflect Called when the
- * derived store gets a new value via its `set` or `update` methods, and determines new values for
- * the origin stores. [Read more...](https://github.com/PixievoltNo1/svelte-writable-derived#new-parameter-reflect)
+ * @param {!Function} reflect Called when the derived store gets a new value via its `set` or
+ * `update` methods, and determines new values for the origin stores.
+ * [Read more...](https://github.com/PixievoltNo1/svelte-writable-derived#new-parameter-reflect)
  * @param [initial] The new store's initial value. Same as
  * [`derived`](https://svelte.dev/docs#run-time-svelte-store-writable)'s 3rd parameter.
  * 

@@ -96,10 +96,10 @@ import writableDerived from "svelte-writable-derived";
 var valueStore = writableDerived(
 	objectStore,
 	(object) => object["a horse"],
-	{ withOld(reflecting, object) {
+	(reflecting, object) => {
 		object["a horse"] = reflecting;
 		return object; // needed to call objectStore.set with the proper value
-	} }
+	}
 );
 ```
 
@@ -138,10 +138,10 @@ import writableDerived from "svelte-writable-derived";
 var valueStore = writableDerived(
 	objectStore,
 	(object) => object.deeply.buried.item,
-	{ withOld(reflecting, object) {
+	(reflecting, object) => {
 		object.deeply.buried.item = reflecting;
 		return object; // needed to call objectStore.set with the proper value
-	} }
+	}
 );
 ```
 
