@@ -13,9 +13,8 @@ type StoresValues<T> = T extends Readable<infer U> ? U :
     { [K in keyof T]: T[K] extends Readable<infer U> ? U : never };
 
 /** Values sent to origin stores. */
-type SetValues<T> = T extends MinimalWritable<infer U> ? U : any[];
-// See this discussion for why the array form is underspecified:
-// https://github.com/PixievoltNo1/svelte-writable-derived/issues/19
+type SetValues<T> = T extends MinimalWritable<infer U> ? U :
+    { [K in keyof T]?: T[K] extends MinimalWritable<infer U> ? U : never };
 
 /**
  * Create a store similar to [Svelte's `derived`](https://svelte.dev/docs#run-time-svelte-store-writable), but which
@@ -37,62 +36,14 @@ type SetValues<T> = T extends MinimalWritable<infer U> ? U : any[];
 export default function writableDerived<S extends Stores, T>(
     origins: S,
     derive: (values: StoresValues<S>) => T,
-    reflect: (reflecting: T) => SetValues<S>,
+    reflect: (reflecting: T, old: StoresValues<S>) => SetValues<S>,
     initial?: T
 ): Writable<T>;
 
 export default function writableDerived<S extends Stores, T>(
     origins: S,
     derive: (values: StoresValues<S>, set: (value: T) => void) => void,
-    reflect: (reflecting: T) => SetValues<S>,
-    initial?: T
-): Writable<T>;
-
-export default function writableDerived<S extends Stores, T>(
-    origins: S,
-    derive: (values: StoresValues<S>) => T,
-    reflect: (reflecting: T, set: (value: SetValues<S>) => void) => ( () => void ) | void,
-    initial?: T
-): Writable<T>;
-
-export default function writableDerived<S extends Stores, T>(
-    origins: S,
-    derive: (values: StoresValues<S>, set: (value: T) => void) => void,
-    reflect: (reflecting: T, set: (value: SetValues<S>) => void) => ( () => void ) | void,
-    initial?: T
-): Writable<T>;
-
-export default function writableDerived<S extends Stores, T>(
-    origins: S,
-    derive: (values: StoresValues<S>) => T,
-    reflect: { withOld: (reflecting: T, old: StoresValues<S>) => SetValues<S> },
-    initial?: T
-): Writable<T>;
-
-export default function writableDerived<S extends Stores, T>(
-    origins: S,
-    derive: (values: StoresValues<S>, set: (value: T) => void) => void,
-    reflect: { withOld: (reflecting: T, old: StoresValues<S>) => SetValues<S> },
-    initial?: T
-): Writable<T>;
-
-export default function writableDerived<S extends Stores, T>(
-    origins: S,
-    derive: (values: StoresValues<S>) => T,
-    reflect: {
-        withOld: (reflecting: T, old: StoresValues<S>, set: (value: SetValues<S>) => void)
-            => ( () => void ) | void
-    },
-    initial?: T
-): Writable<T>;
-
-export default function writableDerived<S extends Stores, T>(
-    origins: S,
-    derive: (values: StoresValues<S>, set: (value: T) => void) => void,
-    reflect: {
-        withOld: (reflecting: T, old: StoresValues<S>, set: (value: SetValues<S>) => void)
-            => ( () => void ) | void
-    },
+    reflect: (reflecting: T, old: StoresValues<S>) => SetValues<S>,
     initial?: T
 ): Writable<T>;
 
