@@ -1,5 +1,9 @@
 # svelte-writable-derived
-[![npm](https://img.shields.io/npm/v/svelte-writable-derived.svg)](https://www.npmjs.com/package/svelte-writable-derived) [![Bundle size](https://img.shields.io/bundlephobia/minzip/svelte-writable-derived.svg)](https://bundlephobia.com/result?p=svelte-writable-derived) ![GitHub CI Status](https://img.shields.io/github/actions/workflow/status/PixievoltNo1/svelte-writable-derived/node.js.yml?branch=master&label=tests) [![License](https://img.shields.io/github/license/PixievoltNo1/svelte-writable-derived.svg)](https://github.com/PixievoltNo1/svelte-writable-derived/blob/master/LICENSE.txt) ![GitHub Repo stars](https://img.shields.io/github/stars/PixievoltNo1/svelte-writable-derived?style=social)
+[![npm](https://img.shields.io/npm/v/svelte-writable-derived.svg)](https://www.npmjs.com/package/svelte-writable-derived)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/svelte-writable-derived.svg)](https://bundlephobia.com/result?p=svelte-writable-derived)
+[![GitHub CI Status](https://img.shields.io/github/actions/workflow/status/PixievoltNo1/svelte-writable-derived/node.js.yml?branch=master&label=tests)](https://github.com/PixievoltNo1/svelte-writable-derived/actions/workflows/node.js.yml)
+[![License](https://img.shields.io/github/license/PixievoltNo1/svelte-writable-derived.svg)](https://github.com/PixievoltNo1/svelte-writable-derived/blob/master/LICENSE.txt)
+![GitHub Repo stars](https://img.shields.io/github/stars/PixievoltNo1/svelte-writable-derived?style=social)
 
 For users of [Svelte](https://svelte.dev/) v3, this is a read-write variant of Svelte's [derived stores](https://svelte.dev/tutorial/derived-stores) that accepts an extra callback to send values back to the source. It builds on the derived & writable stores provided by Svelte, and emulates their behavior as closely as possible.
 
