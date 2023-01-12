@@ -1,4 +1,4 @@
-## 3.0.1 (published as `@next` December 24🎄, 2022)
+## 3.0.1 (published as `@next` December 24🎄, 2022; `@latest` January 11, 2023)
 
 - Changed: `reflect` now has only one form with signature `(reflecting, old)`. It can no longer set origins asynchronously. ([#23](https://github.com/PixievoltNo1/svelte-writable-derived/issues/23))
 - Typescript improvements:
