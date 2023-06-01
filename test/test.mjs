@@ -1,4 +1,4 @@
-import { writableDerived, propertyStore, default as defaultExport } from "./index.mjs";
+import { writableDerived, propertyStore, default as defaultExport } from "../index.mjs";
 import { writable, readable, get } from "svelte/store";
 import { strict as assert} from "assert";
 
