@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/PixievoltNo1/svelte-writable-derived.svg)](https://github.com/PixievoltNo1/svelte-writable-derived/blob/master/LICENSE.txt)
 ![GitHub Repo stars](https://img.shields.io/github/stars/PixievoltNo1/svelte-writable-derived?style=social)
 
-For users of [Svelte](https://svelte.dev/) v3, this is a read-write variant of Svelte's [derived stores](https://svelte.dev/tutorial/derived-stores) that accepts an extra callback to send values back to the source. It builds on the derived & writable stores provided by Svelte, and emulates their behavior as closely as possible.
+For users of [Svelte](https://svelte.dev/) v3 and v4, this is a read-write variant of Svelte's [derived stores](https://svelte.dev/tutorial/derived-stores) that accepts an extra callback to send values back to the source. It builds on the derived & writable stores provided by Svelte, and emulates their behavior as closely as possible.
 
 This project has a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in the Git repo or issues tracker, you agree to be as courteous, welcoming, and generally a lovely person as its terms require. 😊
 
@@ -49,7 +49,7 @@ This function is called when the derived store gets a new value via its `set` an
 
 `reflect` is called after the derived store's subscriptions are called. If the derived store has its `set` and/or `update` methods called again in the process of calling its subscriptions, `reflect` will be called only once, with the most-recently-set value.
 
-`arguments` and rest parameters will not receive `old` unless the function's [length](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/length) is at least 2.
+`arguments`, default parameters, and rest parameters will not receive `old` unless the function's [length](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/length) is at least 2.
 
 ## Named export: `propertyStore()`
 
@@ -230,6 +230,8 @@ I muchly appreciate any way you'd like to show your thanks - knowing people are 
 ## 💸 ... with money
 
 At [my Ko-Fi page](https://ko-fi.com/pixievoltno1), you can make a one-time or monthly donation, or [commission work on an issue](https://ko-fi.com/pixievoltno1/commissions).
+
+You can also support *all* your dependencies at once using [StackAid](https://www.stackaid.us/)!
 
 ## 💌 ... with kind words
 
