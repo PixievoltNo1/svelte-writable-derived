@@ -1,6 +1,8 @@
-## Unpublished
+## 3.1.0 (June🏳️‍🌈 14, 2023)
 
 - Pass Svelte v4's [new `update` callback](https://github.com/sveltejs/svelte/pull/6750) to your `derive` callback
+
+With this release, I am committing to supporting Svelte v4 through its prereleases and beyond! If this is helpful for you, [tip the maintainer!](README.md#--with-money)
 
 ## 3.0.1 (published as `@next` December 24🎄, 2022; `@latest` January 11, 2023)
 
