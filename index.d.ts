@@ -1,4 +1,4 @@
-import type { Readable, Writable } from "svelte/store";
+import type { Readable, Writable, Updater } from "svelte/store";
 
 /** The minimal requirements of the
  * [writable store contract](https://svelte.dev/docs#component-format-script-4-prefix-stores-with-$-to-access-their-values-store-contract).
@@ -42,7 +42,7 @@ export default function writableDerived<S extends Stores, T>(
 
 export default function writableDerived<S extends Stores, T>(
     origins: S,
-    derive: (values: StoresValues<S>, set: (value: T) => void) => void,
+    derive: (values: StoresValues<S>, set: (value: T) => void, update: Updater<T>) => void,
     reflect: (reflecting: T, old: StoresValues<S>) => SetValues<S>,
     initial?: T
 ): Writable<T>;

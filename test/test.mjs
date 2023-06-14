@@ -1,6 +1,21 @@
 import { writableDerived, propertyStore, default as defaultExport } from "../index.mjs";
-import { writable, readable, get } from "svelte/store";
+import { writable, readable, get, loadSvelte3, loadSvelte4 } from "svelte/store";
 import { strict as assert} from "assert";
+
+describe("svelte v3.x", function() {
+	before(function() {
+		loadSvelte3();
+	});
+	testSuite(3);
+});
+describe("svelte v4.x", function() {
+	before(function() {
+		loadSvelte4();
+	});
+	testSuite(4);
+});
+
+function testSuite(svelteVersion) {
 
 describe("origins parameter", function() {
 	specify("get subscribed to only when the derived store is subscribed to", function() {
@@ -117,6 +132,14 @@ describe("derive parameter", function() {
 			testing.subscribe(() => {});
 			assert.equal(get(testing), expected);
 		});
+		if (svelteVersion == 4) {
+			specify("[v4 only] receives update callback", function() {
+				var testing = writableDerived(writable(0), (value, set, update) => {
+					assert.equal(typeof update, "function");
+				}, () => {});
+				testing.subscribe(() => {});
+			});
+		}
 	});
 });
 describe("reflect parameter", function() {
@@ -387,3 +410,5 @@ describe("propertyStore", function () {
 		});
 	});
 });
+
+}

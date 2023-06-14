@@ -24,13 +24,13 @@ import { derived, get } from "svelte/store";
 export default function writableDerived(origins, derive, reflect, initial) {
 	var childDerivedSetter, originValues, blockNextDerive = false;
 	var reflectOldValues = reflect.length >= 2;
-	var wrappedDerive = (got, set) => {
+	var wrappedDerive = (got, set, update) => {
 		childDerivedSetter = set;
 		if (reflectOldValues) {
 			originValues = got;
 		}
 		if (!blockNextDerive) {
-			let returned = derive(got, set);
+			let returned = derive(got, set, update);
 			if (derive.length < 2) {
 				set(returned);
 			} else {

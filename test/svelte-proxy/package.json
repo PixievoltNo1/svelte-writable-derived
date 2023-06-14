@@ -1,0 +1,11 @@
+{
+	"private": true,
+	"name": "svelte",
+	"description": "Proxies svelte/store's exports to allow hot-swapping them",
+	"exports": {
+		"./store": {
+			"types": "./store.d.ts",
+			"default": "./store.mjs"
+		}
+	}
+}
