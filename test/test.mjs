@@ -1,27 +1,34 @@
 import { writableDerived, propertyStore, default as defaultExport } from "../index.mjs";
-import { writable, readable, get, loadSvelte3, loadSvelte4, loadSvelte5 } from "svelte/store";
+import { writable, readable, get, loadSvelteVer, reloadSvelteVer } from "svelte/store";
 import { strict as assert} from "assert";
 
 describe("svelte v3.x", function() {
-	before(function() {
-		loadSvelte3();
-	});
 	testSuite(3);
 });
 describe("svelte v4.x", function() {
-	before(function() {
-		loadSvelte4();
-	});
 	testSuite(4);
 });
 describe("svelte v5.x", function() {
-	before(function() {
-		loadSvelte5();
-	});
 	testSuite(5);
 });
 
 function testSuite(svelteVersion) {
+
+before(function() {
+	return loadSvelteVer(svelteVersion);
+});
+beforeEach(function() {
+	// Fix for https://github.com/PixievoltNo1/svelte-writable-derived/issues/20
+	var subscriptionCalled = false;
+	var store = writable(false);
+	store.subscribe( (wellnessCheck) => {
+		if (wellnessCheck) { subscriptionCalled = true; }
+	} );
+	store.set(true);
+	if (!subscriptionCalled) {
+		return reloadSvelteVer(svelteVersion);
+	}
+})
 
 describe("origins parameter", function() {
 	specify("get subscribed to only when the derived store is subscribed to", function() {

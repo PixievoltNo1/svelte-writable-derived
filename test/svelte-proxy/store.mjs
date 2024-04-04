@@ -1,14 +1,11 @@
-import * as svelte3 from "svelte3/store";
-import * as svelte4 from "svelte4/store";
-import * as svelte5 from "svelte5/store";
-
 export var writable, readable, derived, get;
-export function loadSvelte3() {
-	({writable, readable, derived, get} = svelte3);
+export async function loadSvelteVer(v) {
+	let svelte = await import(`svelte${v}/store`);
+	({writable, readable, derived, get} = svelte);
 }
-export function loadSvelte4() {
-	({writable, readable, derived, get} = svelte4);
-}
-export function loadSvelte5() {
-	({writable, readable, derived, get} = svelte5);
+let reloadNum = 1;
+export async function reloadSvelteVer(v) {
+	let svelteUrl = import.meta.resolve(`svelte${v}/store`);
+	let svelte = await import(`${svelteUrl}#${reloadNum++}`);
+	({writable, readable, derived, get} = svelte);
 }
