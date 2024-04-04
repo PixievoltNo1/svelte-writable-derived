@@ -1,4 +1,4 @@
-## Unreleased
+## 3.1.1 (April 3, 2024)
 
 - Fixed incorrect TypeScript definition for async `derived` ([#25](https://github.com/PixievoltNo1/svelte-writable-derived/issues/25))
 - Now supports Svelte 5 (-next.94 and later)
