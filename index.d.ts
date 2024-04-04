@@ -42,7 +42,7 @@ export default function writableDerived<S extends Stores, T>(
 
 export default function writableDerived<S extends Stores, T>(
     origins: S,
-    derive: (values: StoresValues<S>, set: (value: T) => void, update: Updater<T>) => void,
+    derive: (values: StoresValues<S>, set: (value: T) => void, update: (fn: Updater<T>) => void) => void,
     reflect: (reflecting: T, old: StoresValues<S>) => SetValues<S>,
     initial?: T
 ): Writable<T>;

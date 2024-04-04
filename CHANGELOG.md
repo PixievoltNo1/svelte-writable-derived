@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Fixed incorrect TypeScript definition for async `derived` ([#25](https://github.com/PixievoltNo1/svelte-writable-derived/issues/25))
 - Now supports Svelte 5 (-next.94 and later)
 
 In Svelte 5, this package does not use runes and continues to use the original writable store interface, which is not deprecated. I may release a separate package that uses runes.
