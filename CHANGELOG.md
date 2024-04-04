@@ -1,3 +1,9 @@
+## Unreleased
+
+- Now supports Svelte 5 (-next.94 and later)
+
+In Svelte 5, this package does not use runes and continues to use the original writable store interface, which is not deprecated. I may release a separate package that uses runes.
+
 ## 3.1.0 (June🏳️‍🌈 14, 2023)
 
 - Pass Svelte v4's [new `update` callback](https://github.com/sveltejs/svelte/pull/6750) to your `derive` callback

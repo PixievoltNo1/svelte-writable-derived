@@ -1,5 +1,5 @@
 import { writableDerived, propertyStore, default as defaultExport } from "../index.mjs";
-import { writable, readable, get, loadSvelte3, loadSvelte4 } from "svelte/store";
+import { writable, readable, get, loadSvelte3, loadSvelte4, loadSvelte5 } from "svelte/store";
 import { strict as assert} from "assert";
 
 describe("svelte v3.x", function() {
@@ -13,6 +13,12 @@ describe("svelte v4.x", function() {
 		loadSvelte4();
 	});
 	testSuite(4);
+});
+describe("svelte v5.x", function() {
+	before(function() {
+		loadSvelte5();
+	});
+	testSuite(5);
 });
 
 function testSuite(svelteVersion) {
@@ -132,8 +138,8 @@ describe("derive parameter", function() {
 			testing.subscribe(() => {});
 			assert.equal(get(testing), expected);
 		});
-		if (svelteVersion == 4) {
-			specify("[v4 only] receives update callback", function() {
+		if (svelteVersion >= 4) {
+			specify("[v4+] receives update callback", function() {
 				var testing = writableDerived(writable(0), (value, set, update) => {
 					assert.equal(typeof update, "function");
 				}, () => {});
